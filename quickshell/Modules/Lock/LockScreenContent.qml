@@ -12,6 +12,7 @@ import qs.Common
 import qs.Modals
 import qs.Services
 import qs.Widgets
+import "../../Common/LayoutCodes.js" as LayoutCodes
 
 Item {
     id: root
@@ -175,8 +176,7 @@ Item {
                     }
                     hyprlandKeyboard = mainKeyboard.name;
                     if (mainKeyboard.active_keymap) {
-                        const parts = mainKeyboard.active_keymap.split(" ");
-                        hyprlandCurrentLayout = parts[0].substring(0, 2).toUpperCase();
+                        hyprlandCurrentLayout = LayoutCodes.layoutCode(mainKeyboard.active_keymap);
                     } else {
                         hyprlandCurrentLayout = "";
                     }
@@ -1361,14 +1361,7 @@ Item {
                         StyledText {
                             text: {
                                 if (CompositorService.isNiri) {
-                                    const layout = NiriService.getCurrentKeyboardLayoutName();
-                                    if (!layout)
-                                        return "";
-                                    const parts = layout.split(" ");
-                                    if (parts.length > 0) {
-                                        return parts[0].substring(0, 2).toUpperCase();
-                                    }
-                                    return layout.substring(0, 2).toUpperCase();
+                                    return LayoutCodes.layoutCode(NiriService.getCurrentKeyboardLayoutName());
                                 } else if (CompositorService.isHyprland) {
                                     return hyprlandCurrentLayout;
                                 }
