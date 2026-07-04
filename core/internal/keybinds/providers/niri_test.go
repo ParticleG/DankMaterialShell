@@ -17,7 +17,10 @@ func TestNiriProviderGetCheatSheet(t *testing.T) {
 	tmpDir := t.TempDir()
 	configFile := filepath.Join(tmpDir, "config.kdl")
 
-	content := `binds {
+	content := `input {
+    mod-key "Alt"
+}
+binds {
     Mod+Q { close-window; }
     Mod+F { fullscreen-window; }
     Mod+T hotkey-overlay-title="Open Terminal" { spawn "kitty"; }
@@ -43,6 +46,10 @@ func TestNiriProviderGetCheatSheet(t *testing.T) {
 
 	if cheatSheet.Provider != "niri" {
 		t.Errorf("Provider = %q, want %q", cheatSheet.Provider, "niri")
+	}
+
+	if cheatSheet.ModKey != "Alt" {
+		t.Errorf("ModKey = %q, want %q", cheatSheet.ModKey, "Alt")
 	}
 
 	windowBinds := cheatSheet.Binds["Window"]

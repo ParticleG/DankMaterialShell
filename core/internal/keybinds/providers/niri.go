@@ -55,6 +55,7 @@ func (n *NiriProvider) GetCheatSheet() (*keybinds.CheatSheet, error) {
 	sheet := &keybinds.CheatSheet{
 		Title:            "Niri Keybinds",
 		Provider:         n.Name(),
+		ModKey:           result.ModKey,
 		Binds:            categorizedBinds,
 		DMSBindsIncluded: result.DMSBindsIncluded,
 	}

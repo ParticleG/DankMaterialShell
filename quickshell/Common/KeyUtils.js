@@ -192,23 +192,42 @@ function formatToken(mods, key) {
     return (mods.length ? mods.join("+") + "+" : "") + key;
 }
 
-function normalizeKeyCombo(keyCombo) {
-    if (!keyCombo)
-        return "";
-    return keyCombo.toLowerCase().replace(/\bmod\b/g, "super").replace(/\bsuper\b/g, "super");
+function canonicalModifier(modifier) {
+    var normalized = (modifier || "").toLowerCase();
+    if (normalized === "control")
+        return "ctrl";
+    if (normalized === "win")
+        return "super";
+    return normalized;
 }
 
-function getConflictingBinds(keyCombo, currentAction, allBinds) {
+function withSymbolicMod(mods, modKey) {
+    var configuredMod = canonicalModifier(modKey);
+    if (!configuredMod)
+        return mods;
+    return mods.map(function (modifier) {
+        return canonicalModifier(modifier) === configuredMod ? "Mod" : modifier;
+    });
+}
+
+function normalizeKeyCombo(keyCombo, modKey) {
+    if (!keyCombo)
+        return "";
+    var configuredMod = canonicalModifier(modKey) || "super";
+    return keyCombo.toLowerCase().replace(/\bmod\b/g, configuredMod).replace(/\bcontrol\b/g, "ctrl").replace(/\bwin\b/g, "super");
+}
+
+function getConflictingBinds(keyCombo, currentAction, allBinds, modKey) {
     if (!keyCombo)
         return [];
     var conflicts = [];
-    var normalizedKey = normalizeKeyCombo(keyCombo);
+    var normalizedKey = normalizeKeyCombo(keyCombo, modKey);
     for (var i = 0; i < allBinds.length; i++) {
         var bind = allBinds[i];
         if (bind.action === currentAction)
             continue;
         for (var k = 0; k < bind.keys.length; k++) {
-            if (normalizeKeyCombo(bind.keys[k].key) === normalizedKey) {
+            if (normalizeKeyCombo(bind.keys[k].key, modKey) === normalizedKey) {
                 conflicts.push({
                     action: bind.action,
                     desc: bind.desc || bind.action
