@@ -123,16 +123,11 @@ PanelWindow {
         }
 
         Region {
-            readonly property var r: barWindow.sectionMasked ? body.centerSectionRect : {
-                "x": 0,
-                "y": 0,
-                "w": 0,
-                "h": 0
-            }
-            x: r.x
-            y: r.y
-            width: r.w
-            height: r.h
+            readonly property var r: barWindow.sectionMasked ? body.centerSectionRect : null
+            x: r?.x ?? 0
+            y: r?.y ?? 0
+            width: r?.w ?? 0
+            height: r?.h ?? 0
         }
 
         Region {
